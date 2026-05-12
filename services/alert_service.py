@@ -1,37 +1,17 @@
-"""
-services/alert_service.py
-Sends emergency alerts via Twilio SMS / WhatsApp.
-
-Setup:
-  1. Create free account at https://www.twilio.com
-  2. Get Account SID, Auth Token, and a Phone Number
-  3. For WhatsApp: join Twilio Sandbox (free, just send a WhatsApp message)
-  4. Enter credentials in Settings screen of the app
-"""
-
 import threading
+import urllib.request
+import urllib.parse
+import base64
 from datetime import datetime
 from utils.config import AppConfig
 
-
 class AlertService:
-    """Handles sending SMS and WhatsApp alerts via Twilio"""
+    """Handles sending SMS and WhatsApp alerts via Twilio API natively"""
 
     def __init__(self, storage):
         self.storage = storage
 
-    # ──────────────────────────────────────────────
-    #  PUBLIC API
-    # ──────────────────────────────────────────────
     def send_emergency_alerts(self, location: dict, on_complete=None):
-        """
-        Send alerts to all contacts in a background thread.
-        
-        Args:
-            location: dict with 'lat', 'lon' keys
-            on_complete: callback(success_count, fail_count)
-        """
-        # Run in thread so UI doesn't freeze
         thread = threading.Thread(
             target=self._send_all,
             args=(location, on_complete),
@@ -40,7 +20,6 @@ class AlertService:
         thread.start()
 
     def test_alert(self, phone: str, on_complete=None):
-        """Send a test SMS to verify credentials work"""
         settings = self.storage.get_settings()
         message = (
             "✅ FallGuardian Test Alert\n"
@@ -53,9 +32,6 @@ class AlertService:
         )
         thread.start()
 
-    # ──────────────────────────────────────────────
-    #  INTERNAL
-    # ──────────────────────────────────────────────
     def _send_all(self, location: dict, on_complete):
         settings  = self.storage.get_settings()
         contacts  = self.storage.get_contacts()
@@ -65,10 +41,10 @@ class AlertService:
         if not contacts:
             print("[Alert] No contacts configured!")
             if on_complete:
-                on_complete(0, 0)
+                from kivy.clock import Clock
+                Clock.schedule_once(lambda dt: on_complete(0, 0), 0)
             return
 
-        # Build message
         lat  = location.get('lat', 0.0)
         lon  = location.get('lon', 0.0)
         time_str = datetime.now().strftime("%I:%M %p, %d %b %Y")
@@ -91,12 +67,9 @@ class AlertService:
             if ok:
                 success += 1
                 alerted_names.append(name)
-                print(f"[Alert] ✅ Sent to {name} ({phone})")
             else:
                 failure += 1
-                print(f"[Alert] ❌ Failed for {name} ({phone})")
 
-        # Log to history
         self.storage.add_history_event(
             event_type="fall_detected",
             location={"lat": lat, "lon": lon},
@@ -109,10 +82,7 @@ class AlertService:
 
     def _send_single(self, phone: str, message: str, settings: dict,
                      mode: str = "sms", on_complete=None) -> bool:
-        """Send one message. Returns True on success."""
         try:
-            from twilio.rest import Client
-
             sid   = settings.get("twilio_sid", "").strip()
             token = settings.get("twilio_token", "").strip()
             from_ = settings.get("twilio_from", "").strip()
@@ -121,35 +91,46 @@ class AlertService:
                 print("[Alert] Twilio credentials missing!")
                 return False
 
-            client = Client(sid, token)
+            url = f"https://api.twilio.com/2010-04-01/Accounts/{sid}/Messages.json"
+            auth_str = f"{sid}:{token}"
+            auth_b64 = base64.b64encode(auth_str.encode('utf-8')).decode('ascii')
 
+            def send_req(to_num, from_num):
+                data = urllib.parse.urlencode({
+                    'To': to_num,
+                    'From': from_num,
+                    'Body': message
+                }).encode('utf-8')
+                
+                req = urllib.request.Request(url, data=data)
+                req.add_header("Authorization", f"Basic {auth_b64}")
+                req.add_header("Content-Type", "application/x-www-form-urlencoded")
+                
+                try:
+                    urllib.request.urlopen(req)
+                    return True
+                except Exception as e:
+                    print(f"[Alert] Twilio API Error: {e}")
+                    return False
+
+            overall_success = True
             if mode in ("sms", "both"):
-                client.messages.create(
-                    body=message,
-                    from_=from_,
-                    to=phone
-                )
+                if not send_req(phone, from_):
+                    overall_success = False
 
             if mode in ("whatsapp", "both"):
-                # Twilio WhatsApp sandbox: prefix numbers with 'whatsapp:'
                 wa_from = f"whatsapp:{from_}"
                 wa_to   = f"whatsapp:{phone}"
-                client.messages.create(
-                    body=message,
-                    from_=wa_from,
-                    to=wa_to
-                )
+                if not send_req(wa_to, wa_from):
+                    overall_success = False
 
             if on_complete:
                 from kivy.clock import Clock
-                Clock.schedule_once(lambda dt: on_complete(True), 0)
-            return True
+                Clock.schedule_once(lambda dt: on_complete(overall_success), 0)
+            return overall_success
 
-        except ImportError:
-            print("[Alert] Twilio library not installed. Run: pip install twilio")
-            return False
         except Exception as e:
-            print(f"[Alert] Send error: {e}")
+            print(f"[Alert] General send error: {e}")
             if on_complete:
                 from kivy.clock import Clock
                 Clock.schedule_once(lambda dt: on_complete(False), 0)

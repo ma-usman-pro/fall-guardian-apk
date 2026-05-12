@@ -54,3 +54,6 @@ android.archs = arm64-v8a, armeabi-v7a
 
 # (bool) use buildozer virtualenv
 buildozer.use_venv = 1
+
+android.enable_androidx = True
+android.gradle_dependencies = 'com.android.support:multidex:1.0.3'

@@ -31,7 +31,8 @@ jobs:
 
       - name: Build APK with Buildozer
         run: |
-          buildozer android clean
+          # Only clean if the directory exists to avoid the FileNotFoundError
+          if [ -d ".buildozer" ]; then buildozer android clean; fi
           buildozer android debug
 
       - name: Upload APK

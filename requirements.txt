@@ -1,0 +1,16 @@
+# FallGuardian - Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# ── Core Mobile Framework ──
+kivy==2.3.0
+kivymd==1.2.0
+
+# ── Sensor & Hardware Access ──
+plyer==2.1.0           # Accelerometer, GPS, Notification
+
+# ── Alert Service ──
+twilio==8.13.0         # SMS + WhatsApp sending
+
+# ── Utilities ──
+python-dotenv==1.0.0   # Load .env files (optional)
+requests==2.31.0       # HTTP requests (if using IFTTT/webhook)

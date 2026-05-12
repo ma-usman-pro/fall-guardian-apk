@@ -18,7 +18,7 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 
 # (list) Application requirements
-requirements = python3, kivy==2.2.1, kivymd, plyer
+requirements = python3, kivy==master, kivymd, plyer
 
 # (bool) Auto accept Android SDK licenses
 android.accept_sdk_license = True

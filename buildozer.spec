@@ -46,6 +46,9 @@ android.api = 33
 # (int) Minimum API your APK will support
 android.minapi = 21
 
+# (int) Log level (0 = error only, 1 = info, 2 = debug)
+log_level = 2
+
 # (str) Android NDK version to use
 android.ndk = 26b
 

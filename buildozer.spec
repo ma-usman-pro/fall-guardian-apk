@@ -8,6 +8,12 @@ package.name = fallguardian
 # (str) Package domain (needed for android packaging)
 package.domain = org.ma_usman
 
+# (str) Application versioning
+version = 1.0.0
+
+# (str) Source code where the main.py is located
+source.dir = .
+
 # (str) Source code where the main.py is located
 source.dir = .
 

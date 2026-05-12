@@ -1,12 +1,12 @@
 [app]
 # (str) Title of your application
-title = Restaurant Billing System
+title = FallGuardian
 
 # (str) Package name
-package.name = billingapp
+package.name = fallguardian
 
 # (str) Package domain (needed for android packaging)
-package.domain = org.test
+package.domain = org.ma_usman
 
 # (str) Source code where the main.py is located
 source.dir = .

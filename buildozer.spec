@@ -18,10 +18,7 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 
 # (list) Application requirements
-# CRITICAL: We lock Cython to 0.29.33 to fix the 'exit code 1' error
-# (list) Application requirements
-requirements = python3, kivy==2.3.0, kivymd, plyer, twilio, cython==0.29.33
-
+requirements = python3==3.11.8, kivy==2.3.0, kivymd, plyer, twilio, cython==0.29.33
 # (bool) Auto accept Android SDK licenses
 android.accept_sdk_license = True
 

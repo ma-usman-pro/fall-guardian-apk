@@ -47,7 +47,10 @@ android.api = 33
 android.minapi = 21
 
 # (str) Android NDK version to use
-android.ndk = 25b
+android.ndk = 26b
+
+# (str) Android build tools version to use
+android.build_tools_version = 34.0.0
 
 # (list) The Android architectures to build for
 android.archs = arm64-v8a, armeabi-v7a

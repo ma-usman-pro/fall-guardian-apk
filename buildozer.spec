@@ -19,7 +19,11 @@ source.include_exts = py,png,jpg,kv,atlas
 
 # (list) Application requirements
 # CRITICAL: We lock Cython to 0.29.33 to fix the 'exit code 1' error
-requirements = python3, kivy==2.3.0, cython==0.29.33
+# (list) Application requirements
+requirements = python3, kivy==2.3.0, kivymd, plyer, twilio, cython==0.29.33
+
+# (bool) Auto accept Android SDK licenses
+android.accept_sdk_license = True
 
 # (str) Supported orientation (landscape, portrait or all)
 orientation = portrait

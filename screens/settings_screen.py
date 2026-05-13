@@ -1,8 +1,3 @@
-"""
-screens/settings_screen.py
-Configure Twilio credentials, sensitivity, and alert preferences.
-"""
-
 from kivy.uix.screenmanager import Screen
 from kivy.lang import Builder
 from kivy.app import App
@@ -151,34 +146,16 @@ KV = """
                     radius: [dp(16)]
                     padding: [dp(16), dp(16)]
                     size_hint_y: None
-                    height: dp(150)
+                    height: dp(100)
 
                     MDBoxLayout:
                         orientation: "vertical"
                         spacing: dp(8)
 
-                        MDLabel:
-                            text: "How to send alerts:"
-                            font_style: "Body2"
-                            theme_text_color: "Custom"
-                            text_color: 0.533, 0.573, 0.643, 1
-                            size_hint_y: None
-                            height: dp(24)
-
-                        MDSegmentedButton:
-                            id: alert_mode_seg
-                            size_hint_y: None
-                            height: dp(48)
-
-                            MDSegmentedButtonItem:
-                                MDButtonText:
-                                    text: "SMS"
-                            MDSegmentedButtonItem:
-                                MDButtonText:
-                                    text: "WhatsApp"
-                            MDSegmentedButtonItem:
-                                MDButtonText:
-                                    text: "Both"
+                        MDTextField:
+                            id: alert_mode_field
+                            hint_text: "Alert Mode (type: sms, whatsapp, or both)"
+                            mode: "rectangle"
 
                 # ── SENSITIVITY ──
                 MDLabel:
@@ -300,6 +277,7 @@ class SettingsScreen(Screen):
         self.ids.twilio_sid_field.text  = s.get("twilio_sid", "")
         self.ids.twilio_token_field.text= s.get("twilio_token", "")
         self.ids.twilio_from_field.text = s.get("twilio_from", "")
+        self.ids.alert_mode_field.text  = s.get("alert_mode", "sms")
 
         sens_map = {"low": 1, "medium": 2, "high": 3}
         self.ids.sensitivity_slider.value = sens_map.get(
@@ -324,6 +302,7 @@ class SettingsScreen(Screen):
             "twilio_sid":        self.ids.twilio_sid_field.text.strip(),
             "twilio_token":      self.ids.twilio_token_field.text.strip(),
             "twilio_from":       self.ids.twilio_from_field.text.strip(),
+            "alert_mode":        self.ids.alert_mode_field.text.strip().lower(),
             "sensitivity":       sens_map.get(int(self.ids.sensitivity_slider.value), "medium"),
             "countdown_seconds": int(self.ids.countdown_slider.value),
         })

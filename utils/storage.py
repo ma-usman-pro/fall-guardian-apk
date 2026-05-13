@@ -1,23 +1,15 @@
-"""
-utils/storage.py
-Local JSON storage for contacts, settings, alert history
-"""
-
 import json
 import os
 from datetime import datetime
+from kivy.app import App
 
 
 class Storage:
     """Handles all local data persistence using JSON files"""
 
     def __init__(self):
-        # On Android: use app storage dir; on desktop: use current dir
-        try:
-            from android.storage import app_storage_path  # type: ignore
-            self.base_path = app_storage_path()
-        except ImportError:
-            self.base_path = os.path.join(os.path.dirname(__file__), '..', 'data')
+        # ── THE FIX: Safely get the writable Android directory ──
+        self.base_path = App.get_running_app().user_data_dir
 
         os.makedirs(self.base_path, exist_ok=True)
 

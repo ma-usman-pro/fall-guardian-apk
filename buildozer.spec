@@ -14,14 +14,11 @@ version = 1.0.0
 # (str) Source code where the main.py is located
 source.dir = .
 
-# (list) Source files to include
-source.include_exts = py,png,jpg,kv,atlas
+# ── THE FIX: Added json, ttf, mp3, wav so Android packages them ──
+source.include_exts = py,png,jpg,kv,atlas,json,ttf,mp3,wav
 
-# (list) Application requirements
-# Using kivy==master is required for Python 3.13+ compatibility
-
-# (list) Application requirements
-requirements = python3, kivy==2.3.0, kivymd, plyer
+# ── THE FIX: Locked KivyMD to 1.1.1 to prevent syntax crash ──
+requirements = python3, kivy==2.3.0, kivymd==1.1.1, plyer
 
 # (str) python-for-android branch to use, defaults to master
 p4a.branch = v2024.01.21
@@ -68,4 +65,3 @@ buildozer.use_venv = 1
 
 # (list) python-for-android environment variables
 p4a.env_vars = USE_OPENGL_ES2=1, USE_SDL2=1, KIVY_GRAPHICS=gles
-

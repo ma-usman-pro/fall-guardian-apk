@@ -21,9 +21,11 @@ jobs:
 
       - name: Build APK with Buildozer
         run: |
+          pip install --upgrade buildozer cython virtualenv
           rm -rf .buildozer
-          buildozer android debug
-          
+          rm -rf ~/.gradle
+          python -m buildozer android debug
+
       - name: Install Buildozer and Cython
         run: |
           pip install --upgrade Cython==0.29.33 virtualenv

@@ -9,8 +9,6 @@ from kivy.clock import Clock
 from kivy.animation import Animation
 from kivy.app import App
 from kivy.metrics import dp
-from kivy.uix.behaviors import ButtonBehavior
-from kivymd.uix.card import MDCard
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.toast import toast
@@ -18,9 +16,6 @@ from kivymd.toast import toast
 from services.fall_detector import FallDetector
 from services.gps_service    import GPSService
 from services.alert_service  import AlertService
-
-class ClickableCard(ButtonBehavior, MDCard):
-    pass
 
 KV = """
 <HomeScreen>:
@@ -36,6 +31,7 @@ KV = """
         spacing: 0
         padding: 0
 
+        # ══ TOP BAR ══
         MDBoxLayout:
             orientation: "horizontal"
             size_hint_y: None
@@ -69,6 +65,7 @@ KV = """
                 text_color: 0.533, 0.573, 0.643, 1
                 on_release: root.go_to_settings()
 
+        # ══ SCROLLABLE CONTENT ══
         ScrollView:
             MDBoxLayout:
                 orientation: "vertical"
@@ -76,6 +73,7 @@ KV = """
                 spacing: dp(14)
                 adaptive_height: True
 
+                # ── STATUS CARD ──
                 MDCard:
                     md_bg_color: 0.067, 0.094, 0.161, 1
                     radius: [dp(20)]
@@ -141,6 +139,7 @@ KV = """
                                 width: dp(200)
                             Widget:
 
+                # ── PULSE ANIMATION CARD ──
                 MDCard:
                     id: pulse_card
                     md_bg_color: 0.067, 0.094, 0.161, 1
@@ -215,6 +214,7 @@ KV = """
                             value: 50
                             color: 0, 0.831, 1, 1
 
+                # ── QUICK ACTIONS ──
                 MDLabel:
                     text: "QUICK ACTIONS"
                     font_style: "Overline"
@@ -230,7 +230,7 @@ KV = """
                     size_hint_y: None
                     height: dp(100)
 
-                    ClickableCard:
+                    MDCard:
                         md_bg_color: 1, 0.231, 0.361, 0.15
                         radius: [dp(16)]
                         padding: dp(12)
@@ -252,7 +252,7 @@ KV = """
                                 theme_text_color: "Custom"
                                 text_color: 1, 0.231, 0.361, 1
 
-                    ClickableCard:
+                    MDCard:
                         md_bg_color: 0, 0.831, 1, 0.1
                         radius: [dp(16)]
                         padding: dp(12)
@@ -274,7 +274,7 @@ KV = """
                                 theme_text_color: "Custom"
                                 text_color: 0, 0.831, 1, 1
 
-                    ClickableCard:
+                    MDCard:
                         md_bg_color: 1, 0.702, 0, 0.1
                         radius: [dp(16)]
                         padding: dp(12)
@@ -296,6 +296,7 @@ KV = """
                                 theme_text_color: "Custom"
                                 text_color: 1, 0.702, 0, 1
 
+                # ── LOCATION CARD ──
                 MDCard:
                     md_bg_color: 0.067, 0.094, 0.161, 1
                     radius: [dp(16)]
@@ -518,7 +519,7 @@ class HomeScreen(Screen):
         try:
             dialog = MDDialog(
                 title="🚨 Alerts Sent",
-                text=f"Successfully sent to {success} contact(s).\nFailed: {fail}.",
+                text=f"Successfully sent to {success} contact(s).\\nFailed: {fail}.",
                 buttons=[MDFlatButton(text="OK", on_release=lambda x: dialog.dismiss())]
             )
             dialog.open()

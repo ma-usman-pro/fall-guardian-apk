@@ -21,7 +21,7 @@ source.include_exts = py,png,jpg,kv,atlas
 # Using kivy==master is required for Python 3.13+ compatibility
 # (list) Application requirements
 # (list) Application requirements
-requirements = python3, https://github.com/kivy/kivy/archive/master.zip, https://github.com/kivymd/KivyMD/archive/master.zip, plyer
+requirements = python3, kivy@https://github.com/kivy/kivy/archive/master.zip, kivymd, plyer
 
 # (bool) Auto accept Android SDK licenses
 android.accept_sdk_license = True
@@ -63,3 +63,5 @@ android.archs = arm64-v8a, armeabi-v7a
 # (bool) use buildozer virtualenv
 buildozer.use_venv = 1
 
+# (list) python-for-android environment variables
+p4a.env_vars = USE_OPENGL_ES2=1, USE_SDL2=1, KIVY_GRAPHICS=gles

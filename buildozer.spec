@@ -55,7 +55,7 @@ android.minapi = 21
 log_level = 2
 
 # (str) Android NDK version to use
-android.ndk = 26b
+android.ndk = 25b
 
 # (str) Android build tools version to use
 android.build_tools_version = 34.0.0
@@ -69,6 +69,3 @@ buildozer.use_venv = 1
 # (list) python-for-android environment variables
 p4a.env_vars = USE_OPENGL_ES2=1, USE_SDL2=1, KIVY_GRAPHICS=gles
 
-# (str) Custom CFLAGS and CPPFLAGS to bypass strict NDK 26b warnings
-android.add_cflags = -Wno-error=cast-function-type-strict -Wno-error=cast-function-type
-android.add_cppflags = -Wno-error=cast-function-type-strict -Wno-error=cast-function-type

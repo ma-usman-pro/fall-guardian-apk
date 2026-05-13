@@ -22,20 +22,7 @@ jobs:
       - name: Build APK with Buildozer
         run: |
           pip install --upgrade buildozer cython virtualenv
-          rm -rf .buildozer
-          rm -rf ~/.gradle
           python -m buildozer android debug
-
-      - name: Install Buildozer and Cython
-        run: |
-          pip install --upgrade Cython==0.29.33 virtualenv
-          pip install buildozer
-
-      - name: Build APK with Buildozer
-        run: |
-          # Only clean if the directory exists to avoid the FileNotFoundError
-          if [ -d ".buildozer" ]; then buildozer android clean; fi
-          buildozer android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

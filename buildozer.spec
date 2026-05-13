@@ -43,7 +43,7 @@ android.permissions = INTERNET, ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION
 android.enable_androidx = True
 
 # (list) Gradle dependencies (Required to fix the 64k method limit / Gradle error)
-android.gradle_dependencies = 'com.android.support:multidex:1.0.3'
+android.gradle_dependencies = com.android.support:multidex:1.0.3
 
 # (int) Android API to use
 android.api = 33

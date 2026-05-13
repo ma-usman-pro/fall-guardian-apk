@@ -20,6 +20,7 @@ source.include_exts = py,png,jpg,kv,atlas
 # (list) Application requirements
 # Using kivy==master is required for Python 3.13+ compatibility
 # (list) Application requirements
+# (list) Application requirements
 requirements = python3, https://github.com/kivy/kivy/archive/master.zip, https://github.com/kivymd/KivyMD/archive/master.zip, plyer
 
 # (bool) Auto accept Android SDK licenses

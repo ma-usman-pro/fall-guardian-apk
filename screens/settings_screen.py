@@ -1,3 +1,8 @@
+"""
+screens/settings_screen.py
+Configure sensitivity, and alert preferences.
+"""
+
 from kivy.uix.screenmanager import Screen
 from kivy.lang import Builder
 from kivy.app import App
@@ -82,80 +87,6 @@ KV = """
                             hint_text: "Enter your name"
                             mode: "rectangle"
                             text: ""
-
-                # ── TWILIO SECTION ──
-                MDLabel:
-                    text: "TWILIO API — for SMS/WhatsApp alerts"
-                    font_style: "Overline"
-                    theme_text_color: "Custom"
-                    text_color: 0.533, 0.573, 0.643, 1
-                    size_hint_y: None
-                    height: dp(24)
-
-                MDCard:
-                    md_bg_color: 0.067, 0.094, 0.161, 1
-                    radius: [dp(16)]
-                    padding: [dp(16), dp(16)]
-                    size_hint_y: None
-                    height: dp(320)
-
-                    MDBoxLayout:
-                        orientation: "vertical"
-                        spacing: dp(12)
-
-                        MDTextField:
-                            id: twilio_sid_field
-                            hint_text: "Account SID (from twilio.com/console)"
-                            mode: "rectangle"
-
-                        MDTextField:
-                            id: twilio_token_field
-                            hint_text: "Auth Token"
-                            password: True
-                            mode: "rectangle"
-
-                        MDTextField:
-                            id: twilio_from_field
-                            hint_text: "Twilio Phone Number (+1XXXXXXXXXX)"
-                            mode: "rectangle"
-
-                        MDBoxLayout:
-                            orientation: "horizontal"
-                            size_hint_y: None
-                            height: dp(48)
-
-                            MDRaisedButton:
-                                text: "📋 Get Free Twilio Account"
-                                md_bg_color: 0.067, 0.094, 0.161, 1
-                                theme_text_color: "Custom"
-                                text_color: 0, 0.831, 1, 1
-                                on_release: root.open_twilio_guide()
-                                size_hint_x: 1
-
-                # ── ALERT MODE ──
-                MDLabel:
-                    text: "ALERT MODE"
-                    font_style: "Overline"
-                    theme_text_color: "Custom"
-                    text_color: 0.533, 0.573, 0.643, 1
-                    size_hint_y: None
-                    height: dp(24)
-
-                MDCard:
-                    md_bg_color: 0.067, 0.094, 0.161, 1
-                    radius: [dp(16)]
-                    padding: [dp(16), dp(16)]
-                    size_hint_y: None
-                    height: dp(100)
-
-                    MDBoxLayout:
-                        orientation: "vertical"
-                        spacing: dp(8)
-
-                        MDTextField:
-                            id: alert_mode_field
-                            hint_text: "Alert Mode (type: sms, whatsapp, or both)"
-                            mode: "rectangle"
 
                 # ── SENSITIVITY ──
                 MDLabel:
@@ -273,11 +204,7 @@ class SettingsScreen(Screen):
     def _load_settings(self):
         s = self.app.storage.get_settings()
 
-        self.ids.user_name_field.text   = s.get("user_name", "")
-        self.ids.twilio_sid_field.text  = s.get("twilio_sid", "")
-        self.ids.twilio_token_field.text= s.get("twilio_token", "")
-        self.ids.twilio_from_field.text = s.get("twilio_from", "")
-        self.ids.alert_mode_field.text  = s.get("alert_mode", "sms")
+        self.ids.user_name_field.text = s.get("user_name", "")
 
         sens_map = {"low": 1, "medium": 2, "high": 3}
         self.ids.sensitivity_slider.value = sens_map.get(
@@ -299,10 +226,6 @@ class SettingsScreen(Screen):
 
         self.app.storage.update_settings({
             "user_name":         self.ids.user_name_field.text.strip(),
-            "twilio_sid":        self.ids.twilio_sid_field.text.strip(),
-            "twilio_token":      self.ids.twilio_token_field.text.strip(),
-            "twilio_from":       self.ids.twilio_from_field.text.strip(),
-            "alert_mode":        self.ids.alert_mode_field.text.strip().lower(),
             "sensitivity":       sens_map.get(int(self.ids.sensitivity_slider.value), "medium"),
             "countdown_seconds": int(self.ids.countdown_slider.value),
         })
@@ -311,23 +234,6 @@ class SettingsScreen(Screen):
             title="✅ Settings Saved",
             text="Your settings have been saved successfully.",
             buttons=[MDFlatButton(text="OK", on_release=lambda x: dialog.dismiss())]
-        )
-        dialog.open()
-
-    def open_twilio_guide(self):
-        """Show Twilio setup guide"""
-        dialog = MDDialog(
-            title="📱 Twilio Setup Guide",
-            text=(
-                "1. Go to twilio.com and create FREE account\n\n"
-                "2. From Console, copy:\n"
-                "   • Account SID\n"
-                "   • Auth Token\n\n"
-                "3. Get a free phone number\n\n"
-                "4. For WhatsApp: Go to Messaging → Try it Out → Send WhatsApp message\n\n"
-                "5. Paste credentials here and save"
-            ),
-            buttons=[MDFlatButton(text="GOT IT", on_release=lambda x: dialog.dismiss())]
         )
         dialog.open()
 

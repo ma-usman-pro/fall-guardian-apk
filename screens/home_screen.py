@@ -234,6 +234,7 @@ KV = """
                         md_bg_color: 1, 0.231, 0.361, 0.15
                         radius: [dp(16)]
                         padding: dp(12)
+                        ripple_behavior: True
                         on_release: root.manual_sos()
                         MDBoxLayout:
                             orientation: "vertical"
@@ -256,6 +257,7 @@ KV = """
                         md_bg_color: 0, 0.831, 1, 0.1
                         radius: [dp(16)]
                         padding: dp(12)
+                        ripple_behavior: True
                         on_release: root.go_to_contacts()
                         MDBoxLayout:
                             orientation: "vertical"
@@ -278,6 +280,7 @@ KV = """
                         md_bg_color: 1, 0.702, 0, 0.1
                         radius: [dp(16)]
                         padding: dp(12)
+                        ripple_behavior: True
                         on_release: root.test_detection()
                         MDBoxLayout:
                             orientation: "vertical"
@@ -331,16 +334,17 @@ KV = """
                     size_hint_y: None
                     height: dp(20)
 
+    # ══ EMERGENCY OVERLAY ══
     MDBoxLayout:
         id: emergency_overlay
         orientation: "vertical"
         spacing: dp(20)
         padding: dp(30)
-        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        # THE FIX: Start it far off-screen so it doesn't block clicks!
+        pos_hint: {"center_x": 0.5, "center_y": 5.0} 
         size_hint: None, None
         size: dp(340), dp(400)
         opacity: 0
-        disabled: True
         canvas.before:
             Color:
                 rgba: 0.039, 0.055, 0.102, 0.95
@@ -482,7 +486,7 @@ class HomeScreen(Screen):
 
     def _show_emergency_overlay(self):
         overlay = self.ids.emergency_overlay
-        overlay.disabled = False
+        overlay.pos_hint = {"center_x": 0.5, "center_y": 0.5}
         Animation(opacity=1, duration=0.3).start(overlay)
         self._update_countdown_label()
         self._countdown_event = Clock.schedule_interval(self._tick_countdown, 1.0)
@@ -502,7 +506,7 @@ class HomeScreen(Screen):
         if self._countdown_event: self._countdown_event.cancel()
         overlay = self.ids.emergency_overlay
         anim = Animation(opacity=0, duration=0.3)
-        anim.bind(on_complete=lambda *_: setattr(overlay, 'disabled', True))
+        anim.bind(on_complete=lambda *_: setattr(overlay, 'pos_hint', {"center_x": 0.5, "center_y": 5.0}))
         anim.start(overlay)
 
     def cancel_alert(self):

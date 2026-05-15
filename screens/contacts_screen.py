@@ -7,6 +7,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.lang import Builder
 from kivy.app import App
 from kivy.metrics import dp
+from kivy.properties import StringProperty, NumericProperty, ObjectProperty
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -81,6 +82,13 @@ Builder.load_string(KV)
 
 
 class ContactItem(TwoLineAvatarIconListItem):
+    # ── THE FIX: Explicitly declare Kivy Properties so the UI can read them ──
+    contact_id = NumericProperty()
+    name = StringProperty("")
+    phone = StringProperty("")
+    relation = StringProperty("")
+    delete_callback = ObjectProperty(None)
+
     def __init__(self, contact_id, name, phone, relation, delete_callback, **kwargs):
         super().__init__(**kwargs)
         self.contact_id = contact_id
@@ -90,14 +98,13 @@ class ContactItem(TwoLineAvatarIconListItem):
         self.delete_callback = delete_callback
 
 
-# ── THE FIX: Give the dialog content strict height and spacing ──
 class AddContactContent(MDBoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.orientation = "vertical"
         self.spacing = dp(15)
         self.size_hint_y = None
-        self.height = dp(220)  # This prevents the overlapping!
+        self.height = dp(220)
 
         self.name_field = MDTextField(
             hint_text="Full Name", 

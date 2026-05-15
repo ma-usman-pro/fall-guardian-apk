@@ -26,19 +26,16 @@ class AlertService:
             if on_complete: Clock.schedule_once(lambda dt: on_complete(0, 0), 0)
             return
 
+        # Grab coordinates and build a clean, short maps link
         lat = location.get("lat", "Unknown")
         lon = location.get("lon", "Unknown")
         if lat != "Unknown":
-            maps_url = f"http://maps.google.com/?q={lat},{lon}"
+            maps_url = f"http://maps.google.com/maps?q={lat},{lon}"
         else:
             maps_url = "Location Unavailable"
 
-        message = (
-            "🚨 EMERGENCY ALERT - FallGuardian 🚨\n\n"
-            "I may have fallen and need help immediately!\n\n"
-            f"📍 My Location: {maps_url}\n\n"
-            "Please check on me or call emergency services."
-        )
+        # ── THE FIX: Short, ASCII-only text (Under 160 chars, NO EMOJIS) ──
+        message = f"FallGuardian SOS: I may have fallen and need help! Loc: {maps_url}"
 
         success_count = 0
         fail_count = 0
@@ -53,6 +50,7 @@ class AlertService:
                     phone = contact.get("phone")
                     if phone:
                         try:
+                            # Send the short message natively
                             sms_manager.sendTextMessage(phone, None, message, None, None)
                             success_count += 1
                         except Exception as e:
